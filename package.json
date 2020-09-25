@@ -1,0 +1,19 @@
+{
+  "name": "calendar",
+  "version": "1.0.0",
+  "description": "Primera version de este ejemplo de GCalendar",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EmirSua/GCalendar.git"
+  },
+  "author": "Emir Suarez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EmirSua/GCalendar/issues"
+  },
+  "homepage": "https://github.com/EmirSua/GCalendar#readme"
+}

@@ -1,23 +1,29 @@
 const fs = require('fs');
+const { writeFileSync } = require('fs')
+const ics = require('ics')
 const readline = require('readline');
 const {google} = require('googleapis');
 const rand = require("random-key");
 const cod=rand.generate();
-console.log(cod)
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = 'token.json';
+const token= {"access_token":"ya29.a0AfH6SMDUuRa02CRwA2GaE7PZIu89mnwyyUJjb6_SG1C0kdomX-3DK5j7B_NGyA5Wym5Cnkx4ile_--_mOREUs5tXN7NDrjcretB7pKls7yhm9eboJ8SO6X39u6Slnm8NX6Jsn800iXADSOQuxraEfe8puzoVYd-dP14","refresh_token":"1//0fvP6qYC3ideHCgYIARAAGA8SNwF-L9Irr2YgxwAkscw5ITjOaS4jQitp0XlpWaD4ic2YRcxjwAA-6JwDbmoMNIpiFHsNYkTHWPc","scope":"https://www.googleapis.com/auth/calendar","token_type":"Bearer","expiry_date":1600731440924};
 
 // Load client secrets from a local file.
-fs.readFile('credentials.json', (err, content) => {
+/*fs.readFile('credentials.json', (err, content) => {
   if (err) return console.log('Error loading client secret file:', err);
   // Authorize a client with credentials, then call the Google Calendar API.
   authorize(JSON.parse(content), newEvent);
-});
+});*/
+const credentials = {"installed":{"client_id":"523100534189-v21amakqskfgtidncmhf9a9bvnvoj5ih.apps.googleusercontent.com","project_id":"quickstart-1600727321967","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_secret":"w4x2_zgX2GSEbrajhqTc_Li-","redirect_uris":["urn:ietf:wg:oauth:2.0:oob","http://localhost"]}}
+//VAMOS A OBTENER LAS CREDENCIALES Y AUTORIZAMOS
+authorize(credentials,newEvent)
+
+
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -31,68 +37,33 @@ function authorize(credentials, callback) {
       client_id, client_secret, redirect_uris[0]);
 
   // Check if we have previously stored a token.
-  fs.readFile(TOKEN_PATH, (err, token) => {
-    if (err) return getAccessToken(oAuth2Client, callback);
-    oAuth2Client.setCredentials(JSON.parse(token));
+
+    oAuth2Client.setCredentials(token);
     callback(oAuth2Client);
-  });
 }
-
-/**
- * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
- * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback for the authorized client.
- */
-function getAccessToken(oAuth2Client, callback) {
-  const authUrl = oAuth2Client.generateAuthUrl({
-    access_type: 'offline',
-    scope: SCOPES,
-  });
-  console.log('Authorize this app by visiting this url:', authUrl);
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-  rl.question('Enter the code from that page here: ', (code) => {
-    rl.close();
-    oAuth2Client.getToken(code, (err, token) => {
-      if (err) return console.error('Error retrieving access token', err);
-      oAuth2Client.setCredentials(token);
-      // Store the token to disk for later program executions
-      fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-        if (err) return console.error(err);
-        console.log('Token stored to', TOKEN_PATH);
-      });
-      callback(oAuth2Client);
-    });
-  });
-}
-
 /**
  * Lists the next 10 events on the user's primary calendar.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 function newEvent(auth) {
   const calendar = google.calendar({version: 'v3', auth});
-  var event = {
+  const event = {
     'summary': 'Google I/O 2015',
     'location': '800 Howard St., San Francisco, CA 94103',
     'description': 'A chance to hear more about Google\'s developer products.',
     'start': {
-      'dateTime': '2020-09-22T09:00:00-07:00',
+      'dateTime': '2020-09-26T09:00:00-07:00',
       'timeZone': 'America/Los_Angeles',
     },
     'end': {
-      'dateTime': '2020-09-22T17:00:00-07:00',
+      'dateTime': '2020-09-28T17:00:00-07:00',
       'timeZone': 'America/Los_Angeles',
     },
     'recurrence': [
       'RRULE:FREQ=DAILY;COUNT=2'
     ],
     'attendees': [
-      {'email': 'lpage@example.com'},
-      {'email': 'sbrin@example.com'},
+      {'email': 'emir.mendoza@micorreo.upp.edu.mx'},
     ],
     'reminders': {
       'useDefault': false,
@@ -105,12 +76,12 @@ function newEvent(auth) {
         createRequest: {requestId: cod}
       },
   };
-  
   calendar.events.insert({
     auth: auth,
     calendarId: 'primary',
     resource: event,
     conferenceDataVersion: 1,
+    sendUpdates: "all",
   }, function(err, event) {
     if (err) {
       console.log('There was an error contacting the Calendar service: ' + err);
@@ -118,5 +89,21 @@ function newEvent(auth) {
     }
     console.log('Event created: %s', event.data.htmlLink);
     console.log("HANGOUT_LINK", event.data.hangoutLink);
-  });  
+  });
+
+  ics.createEvent({
+    title: event.summary,
+    description: event.description,
+    start:[2018, 1, 15, 6, 50], //Fecha y hora de inicio del evento con formato [2018, 1, 15, 6, 30],
+    end:[2018, 2, 15, 6, 50], //Fecha y hora de finalizacion del evento con formato [2018, 1, 15, 6, 30],
+    url: event.hangoutLink,
+    attendees:[{email:'example1@gmail.com', role:'REQ-PARTICIPANT',},{email:'example2@gmail.com',role:'REQ-PARTICIPANT',}] ,
+    duration: { minutes: 50 }
+  }, (error, value) => {
+    if (error) {
+      console.log(error)
+    }
+  
+    writeFileSync(`${__dirname}/event.ics`, value)
+  })
 }
