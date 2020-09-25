@@ -6,20 +6,26 @@ const {google} = require('googleapis');
 const rand = require("random-key");
 const cod=rand.generate();
 
-// If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const token= {"access_token":"ya29.a0AfH6SMDUuRa02CRwA2GaE7PZIu89mnwyyUJjb6_SG1C0kdomX-3DK5j7B_NGyA5Wym5Cnkx4ile_--_mOREUs5tXN7NDrjcretB7pKls7yhm9eboJ8SO6X39u6Slnm8NX6Jsn800iXADSOQuxraEfe8puzoVYd-dP14","refresh_token":"1//0fvP6qYC3ideHCgYIARAAGA8SNwF-L9Irr2YgxwAkscw5ITjOaS4jQitp0XlpWaD4ic2YRcxjwAA-6JwDbmoMNIpiFHsNYkTHWPc","scope":"https://www.googleapis.com/auth/calendar","token_type":"Bearer","expiry_date":1600731440924};
+const token= {"access_token":"ya29.a0AfH6SMAp0k5TDr5YlR5uL17UGhNAmUGvRxLPCidaF6IwiSafkHzAtZCn0weoCG5zM8tvK4TmxitcHzpdjDVhmde50KBPNLAnfawnTVe0WWz3JlGAatmY02iZg1b9EqLA-ltL5jcni2yCYTHXoFU55qjDaCRkKYs8Ne4","refresh_token":"1//0fuI_JavHtJEsCgYIARAAGA8SNwF-L9Ir24xAFrHNzGq5DlEgkX3ulHHgLob28m9szotxdpFFHdQh3f1ti7-hiQCUFiFlJvyVRNc","scope":"https://www.googleapis.com/auth/calendar","token_type":"Bearer","expiry_date":1601050302480};
 
 // Load client secrets from a local file.
-/*fs.readFile('credentials.json', (err, content) => {
-  if (err) return console.log('Error loading client secret file:', err);
-  // Authorize a client with credentials, then call the Google Calendar API.
-  authorize(JSON.parse(content), newEvent);
-});*/
-const credentials = {"installed":{"client_id":"523100534189-v21amakqskfgtidncmhf9a9bvnvoj5ih.apps.googleusercontent.com","project_id":"quickstart-1600727321967","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_secret":"w4x2_zgX2GSEbrajhqTc_Li-","redirect_uris":["urn:ietf:wg:oauth:2.0:oob","http://localhost"]}}
+const credentials = {
+  "installed": {"client_id": "387427347342-fu18c8n22eporkm9gu1v5oldr6f5arn5.apps.googleusercontent.com",
+      "project_id": "open-finance-202-1601046611119",
+      "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+      "token_uri": "https://oauth2.googleapis.com/token",
+      "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+      "client_secret": "oUGhkC9CzBGdV1C9DCoDCV4x",
+      "redirect_uris": [
+          "urn:ietf:wg:oauth:2.0:oob",
+          "http://localhost"
+      ]
+  }
+};
 //VAMOS A OBTENER LAS CREDENCIALES Y AUTORIZAMOS
 authorize(credentials,newEvent)
 
@@ -63,7 +69,7 @@ function newEvent(auth) {
       'RRULE:FREQ=DAILY;COUNT=2'
     ],
     'attendees': [
-      {'email': 'emir.mendoza@micorreo.upp.edu.mx'},
+      {'email': 'example1@hotmail.com'},
     ],
     'reminders': {
       'useDefault': false,
@@ -90,20 +96,4 @@ function newEvent(auth) {
     console.log('Event created: %s', event.data.htmlLink);
     console.log("HANGOUT_LINK", event.data.hangoutLink);
   });
-
-  ics.createEvent({
-    title: event.summary,
-    description: event.description,
-    start:[2018, 1, 15, 6, 50], //Fecha y hora de inicio del evento con formato [2018, 1, 15, 6, 30],
-    end:[2018, 2, 15, 6, 50], //Fecha y hora de finalizacion del evento con formato [2018, 1, 15, 6, 30],
-    url: event.hangoutLink,
-    attendees:[{email:'example1@gmail.com', role:'REQ-PARTICIPANT',},{email:'example2@gmail.com',role:'REQ-PARTICIPANT',}] ,
-    duration: { minutes: 50 }
-  }, (error, value) => {
-    if (error) {
-      console.log(error)
-    }
-  
-    writeFileSync(`${__dirname}/event.ics`, value)
-  })
 }
